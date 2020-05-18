@@ -87,10 +87,6 @@ async def render_tab_panes(tab, panes, pofile_name):
         for command in pane_commands:
             await current_session.async_send_text(f"{command}\n")
 
-        # Leave a command in the prompt, awaiting execution
-        pane_prompt = current_session.get("prompt") or ""
-        current_session.async_send_text(f"{pane_prompt}")
-
     # For each of the vertical panes rendered above, render the sub panes now
     # e.g. 1/2, 1/3, 1/4, 1/5 ... 2/2, 2/3, 2/4, ... and so on
     for vertical_pane_counter in list(range(1, 10)):
@@ -125,10 +121,6 @@ async def render_tab_panes(tab, panes, pofile_name):
             pane_commands = horizontal_pane.get('commands') or []
             for command in pane_commands:
                 await current_session.async_send_text(f"{command}\n")
-
-            # Leave a command in the prompt, awaiting execution
-            pane_prompt = horizontal_pane.get("prompt") or ""
-            current_session.async_send_text(f"{pane_prompt}")
 
         await focus_session.async_activate()
 
@@ -192,7 +184,12 @@ async def activate(connection):
         if root_path:
             for pane in tab_panes:
                 commands = pane.get('commands') or []
+                prompt = pane.get('prompt') or ''
+
                 commands.insert(0, f"cd {root_path}")
+                if prompt:
+                    commands.append(prompt)
+
                 pane['commands'] = commands
 
         await curr_tab.async_set_title(tab_title)
