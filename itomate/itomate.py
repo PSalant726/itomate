@@ -182,17 +182,17 @@ async def activate(connection):
 
         # Set root path if it exists
         for pane in tab_panes:
+            commands = pane.get('commands') or []
             if root_path:
-                commands = pane.get('commands') or []
                 commands.insert(0, f"cd {root_path}")
                 for command in commands:
                     command += "\n"
 
-                prompt = pane.get('prompt') or ''
-                if prompt:
-                    commands.append(prompt)
+            prompt = pane.get('prompt') or ''
+            if prompt:
+                commands.append(prompt)
 
-                pane['commands'] = commands
+            pane['commands'] = commands
 
         await curr_tab.async_set_title(tab_title)
         await render_tab_panes(curr_tab, tab_panes, profile_name)
