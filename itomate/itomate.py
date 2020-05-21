@@ -185,8 +185,9 @@ async def activate(connection):
             commands = pane.get('commands') or []
             if root_path:
                 commands.insert(0, f"cd {root_path}")
-                for command in commands:
-                    command += "\n"
+
+            for command in commands:
+                command += "\n"
 
             prompt = pane.get('prompt') or ''
             if prompt:
